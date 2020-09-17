@@ -25,26 +25,21 @@ def up(state, location):
     if state is True:
         state = False
     return
-
 def down(state, location):
     if state is True:
         state = False
     return
-
 def left(state, location):
     if state is True:
         state = False
     return
-
 def right(state, location):
     if state is True:
         state = False
     return
-
 def goalCheck(state, location):
-    if state == True and location == "G":
+    if state is True and location is "G":
         return
-        
 def check_state(state):
     if state is True:
         standing = True
@@ -63,18 +58,12 @@ def main():
     print(mazeNum)
     maze = open(mazeNum + ".txt", "r")
     print(maze.read())
-    lineNum = (maze.read())
-    line = list(lineNum)
-    print(line)
-    for i in range(len(lineNum)):
-        if lineNum[i] == "S":
+    for i in maze:
+        print("Check")
+        if maze[i] == "S":
             start = i
             print(start)
             break
-
-    
-    
-
 
 
 if __name__ == "__main__": 
