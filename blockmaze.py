@@ -7,9 +7,14 @@ from collections import deque
 #   q.popleft()   # pop from the front of the queue.
 
 class Node:
-    def __init__(self, state, parent):
+    def __init__(self, x, y, state, parent):
         self.state = state
         self.parent = parent
+        self.location = (x,y)                        #location tuple
+        self.g = 0
+        self.h = 0
+        self.f = 0
+
 
     # Nodes with the same state are viewed as equal
     def __eq__(self, other_node):
@@ -19,6 +24,13 @@ class Node:
     # (e.g., when storing them in a set or dictionary)
     def __hash__(self):
         return hash(self.state)
+
+    # Evaluate true cost from block to the goal
+    def __evaluateTrueCost__ (self):
+        # true_cost = (the absolute value of the x location of block - the x location 
+        # of the goal) + (the absolute value of the y location of the block - the y location of the goal)
+        return #(abs((self.location[0] - ) + abs(self.location[1] - )
+
 
 #TEST CODE
 def up(state, location):
@@ -98,7 +110,13 @@ def main():
     print(mazeLines[0][0])                      #prints "S" for maze1
     print(mazeLines[6][6])                      #prints "G" for maze2
 
+    #TEST EVALUATE
+    #newNode = Node(0,0,None,None)
+    #cost = newNode.evaluateTrueCost()
+
     maze.close
+
+    
 
 '''
     if "S" in line:
