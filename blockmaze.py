@@ -11,7 +11,7 @@ class Node:
     def __init__(self, x, y, state, parent):
         self.state = state
         self.parent = parent
-        self.location = (x,y)                        # location tuple
+        self.location = x, y                        # location tuple
         self.g = 0                                   # true cost
         self.h = 0                                   # estimated cost 
         self.fcost = 0                               # f = g + h
@@ -38,7 +38,7 @@ class Node:
     def __moves_from_goal__ (self):
         # true_cost = (the absolute value of the x location of block - the x location 
         # of the goal) + (the absolute value of the y location of the block - the y location of the goal)
-        return #(abs((self.location[0] - ) + abs(self.location[1] - )
+        return (abs(self.location[0] - locationG[0]) + abs(self.location[1] - locationG[1]))
 
 
 #TEST CODE
@@ -75,7 +75,7 @@ def aStar(gn, hn, start, goal):
     frontier =  list()
     explored = list()
     fn = gn + hn
-    s = Node(fn, None)
+    s = Node(locationS[0], locationS[1], fn, None)
     frontier.append(s)
     while frontier:
         frontier.sort()
@@ -110,14 +110,19 @@ def main():
     mazeLines = maze.readlines()                #creates 2D array of maze
     print(mazeLines)
     maze = open(mazeNum + ".txt", "r")
-    for i in maze.read():                       #locates start position "S"
-        fileCounter = fileCounter + 1
-        if "S" in i:                            
-            print(fileCounter)
+    for i in range(len(mazeLines)):             #iterates through maze to find location of S and G
+        for j in range(len(mazeLines)):
+            fileCounter = fileCounter + 1
+            if mazeLines[i][j] == "S":  
+                locationS = i, j                  #start location storec as tuple
+                print("S at: " + str(locationS))
+            if mazeLines[i][j] == "G": 
+                locationG = i, j                  #goal location stored as tuple
+                print("G at: " + str(locationG))
     
     #TEST CODE
     print(mazeLines[0][0])                      #prints "S" for maze1
-    print(mazeLines[6][6])                      #prints "G" for maze2
+    print(mazeLines[6][6])                      #prints "G" for maze1
 
     #TEST EVALUATE
     #newNode = Node(0,0,None,None)
