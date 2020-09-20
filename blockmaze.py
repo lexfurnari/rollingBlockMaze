@@ -1,4 +1,5 @@
 import sys
+import heapq
 from collections import deque
 
 # Usage of deque:
@@ -10,23 +11,31 @@ class Node:
     def __init__(self, x, y, state, parent):
         self.state = state
         self.parent = parent
-        self.location = (x,y)                        #location tuple
-        self.g = 0
-        self.h = 0
-        self.f = 0
+        self.location = (x,y)                        # location tuple
+        self.g = 0                                   # true cost
+        self.h = 0                                   # estimated cost 
+        self.fcost = 0                               # f = g + h
 
 
     # Nodes with the same state are viewed as equal
     def __eq__(self, other_node):
         return isinstance(other_node, Node) and self.state == other_node.state
 
+    def __less_than__(self, other_node):
+        return self.fcost < other_node.fcost         # fcost tells you which one to take off the queue 
+
+    def __more_than__(self, other_node):
+        return self.fcost > othernode.fcost
+
+
+
     # Nodes with the same state hash to the same value
     # (e.g., when storing them in a set or dictionary)
     def __hash__(self):
         return hash(self.state)
 
-    # Evaluate true cost from block to the goal
-    def __evaluateTrueCost__ (self):
+    # Evaluates the number of blocks away from the goal
+    def __moves_from_goal__ (self):
         # true_cost = (the absolute value of the x location of block - the x location 
         # of the goal) + (the absolute value of the y location of the block - the y location of the goal)
         return #(abs((self.location[0] - ) + abs(self.location[1] - )
@@ -112,7 +121,7 @@ def main():
 
     #TEST EVALUATE
     #newNode = Node(0,0,None,None)
-    #cost = newNode.evaluateTrueCost()
+    #cost = newNode.moved_from_goal()
 
     maze.close
 
