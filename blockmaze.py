@@ -7,14 +7,27 @@ from collections import deque
 #   q.append('A') # append A to the rear of the queue.
 #   q.popleft()   # pop from the front of the queue.
 
+'''
+frontier = []
+heapq.heappush(frontier,'A')
+heapq.heappush(frontier,'B')
+print(heapq.heappop(frontier))
+'''
+
 class Node:
     def __init__(self, x, y, state, parent):
         self.state = state
         self.parent = parent
+<<<<<<< HEAD
+        self.g = 0                                   # true cost
+        self.h = 0                                   # estimated cost 
+        self.f = self.g + self.h                     # f = g + h    
+=======
         self.location = x, y                        # location tuple
         self.g = 0                                   # true cost
         self.h = 0                                   # estimated cost 
         self.fcost = 0                               # f = g + h
+>>>>>>> c7dfc9e2c723ba6cd75627b2707cdd054e02a3c3
 
 
     # Nodes with the same state are viewed as equal
@@ -25,7 +38,11 @@ class Node:
         return self.fcost < other_node.fcost         # fcost tells you which one to take off the queue 
 
     def __more_than__(self, other_node):
+<<<<<<< HEAD
+        return self.fcost > other_node.fcost
+=======
         return self.fcost > othernode.fcost
+>>>>>>> c7dfc9e2c723ba6cd75627b2707cdd054e02a3c3
 
 
 
@@ -39,6 +56,8 @@ class Node:
         # true_cost = (the absolute value of the x location of block - the x location 
         # of the goal) + (the absolute value of the y location of the block - the y location of the goal)
         return (abs(self.location[0] - locationG[0]) + abs(self.location[1] - locationG[1]))
+<<<<<<< HEAD
+=======
 
 
 #TEST CODE
@@ -68,27 +87,42 @@ def check_state(state):
     else:
         standing = False
         return standing
+>>>>>>> c7dfc9e2c723ba6cd75627b2707cdd054e02a3c3
 
+'''
+frontier = []
+heapq.heappush(frontier,'A')
+heapq.heappush(frontier,'B')
+print(heapq.heappop(frontier))
+'''
 
 #A* search
-def aStar(gn, hn, start, goal):
-    frontier =  list()
+def aStar(start, goal):
+    frontier = []
     explored = list()
+<<<<<<< HEAD
+    s = Node(start, None)
+    heapq.heappush(frontier, s)
+=======
     fn = gn + hn
     s = Node(locationS[0], locationS[1], fn, None)
     frontier.append(s)
+>>>>>>> c7dfc9e2c723ba6cd75627b2707cdd054e02a3c3
     while frontier:
-        frontier.sort()
-        x = frontier.pop(0)
-        if (x.state is goal):
-            return x.state
-        explored.append(x.state)
-        for i in range(hn):
-            child = Node(fn,x)
-            if child.state not in explored and child not in frontier:
-                frontier.append(child)
-            elif child in frontier:
-                frontier.append(child)
+        parent = heapq.heappop(frontier)
+        if (parent.state == goal):          #TEST: after first iteration, parent is a list and not a node
+            return parent.state             #TEST: is state the solution? or is it just the node
+        explored.append(parent.state)
+        for i in range(3):                   #TEST: what is the range?
+            for j in range(3):
+                nextLocation = ([i],[j])
+                child = Node(nextLocation, parent)
+                if child.state not in explored and child not in frontier:
+                    frontier.insert(0, frontier)        #how are we inserting into frontier?
+                elif child.state in frontier and child.state > frontier[0]:
+                    frontier.insert(0,child)                #is this correct?
+
+    return None
 
 
     
@@ -98,9 +132,10 @@ mazeNum = sys.argv[1]
 def main():
     fileCounter = 0
     movCounter = 0
-    blockState = True
+    standing = True
     position = None
-    start = 0
+    locationS = None
+    locationG = None
     x = list()
     y = list()
     print(mazeNum)
@@ -108,7 +143,7 @@ def main():
     print(maze.read())                          #prints full map of maze
     maze = open(mazeNum + ".txt", "r")
     mazeLines = maze.readlines()                #creates 2D array of maze
-    print(mazeLines)
+    #print(mazeLines)
     maze = open(mazeNum + ".txt", "r")
     for i in range(len(mazeLines)):             #iterates through maze to find location of S and G
         for j in range(len(mazeLines)):
@@ -119,10 +154,17 @@ def main():
             if mazeLines[i][j] == "G": 
                 locationG = i, j                  #goal location stored as tuple
                 print("G at: " + str(locationG))
+<<<<<<< HEAD
+            
+        
+    searching = aStar(locationS, locationG)
+    
+=======
     
     #TEST CODE
     print(mazeLines[0][0])                      #prints "S" for maze1
     print(mazeLines[6][6])                      #prints "G" for maze1
+>>>>>>> c7dfc9e2c723ba6cd75627b2707cdd054e02a3c3
 
     #TEST EVALUATE
     #newNode = Node(0,0,None,None)
@@ -131,6 +173,21 @@ def main():
     maze.close
 
     
+
+'''
+what to store in node
+   present
+   cost to goal
+   h-cost
+   f-cost
+If wanna use list class, must use >, < for node class
+to find fn of child, take gn of parent plus hn of child
+for an admissible heuristic, hn =< h*n
+   where h*n = true cost to goal
+Use sm similar to manhattan distance
+keep in mind oreintation of block
+use of tuples?
+'''
 
 '''
     if "S" in line:
