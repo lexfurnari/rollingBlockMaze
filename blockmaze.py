@@ -15,19 +15,12 @@ print(heapq.heappop(frontier))
 '''
 
 class Node:
-    def __init__(self, x, y, state, parent):
+    def __init__(self, state, parent):
         self.state = state
         self.parent = parent
-<<<<<<< HEAD
         self.g = 0                                   # true cost
         self.h = 0                                   # estimated cost 
         self.f = self.g + self.h                     # f = g + h    
-=======
-        self.location = x, y                        # location tuple
-        self.g = 0                                   # true cost
-        self.h = 0                                   # estimated cost 
-        self.fcost = 0                               # f = g + h
->>>>>>> c7dfc9e2c723ba6cd75627b2707cdd054e02a3c3
 
 
     # Nodes with the same state are viewed as equal
@@ -38,11 +31,7 @@ class Node:
         return self.fcost < other_node.fcost         # fcost tells you which one to take off the queue 
 
     def __more_than__(self, other_node):
-<<<<<<< HEAD
         return self.fcost > other_node.fcost
-=======
-        return self.fcost > othernode.fcost
->>>>>>> c7dfc9e2c723ba6cd75627b2707cdd054e02a3c3
 
 
 
@@ -56,38 +45,6 @@ class Node:
         # true_cost = (the absolute value of the x location of block - the x location 
         # of the goal) + (the absolute value of the y location of the block - the y location of the goal)
         return (abs(self.location[0] - locationG[0]) + abs(self.location[1] - locationG[1]))
-<<<<<<< HEAD
-=======
-
-
-#TEST CODE
-def up(state, location):
-    if state is True:
-        state = False
-    return
-def down(state, location):
-    if state is True:
-        state = False
-    return
-def left(state, location):
-    if state is True:
-        state = False
-    return
-def right(state, location):
-    if state is True:
-        state = False
-    return
-def goalCheck(state, location):
-    if state is True and location is "G":
-        return
-def check_state(state):
-    if state is True:
-        standing = True
-        return standing
-    else:
-        standing = False
-        return standing
->>>>>>> c7dfc9e2c723ba6cd75627b2707cdd054e02a3c3
 
 '''
 frontier = []
@@ -100,14 +57,8 @@ print(heapq.heappop(frontier))
 def aStar(start, goal):
     frontier = []
     explored = list()
-<<<<<<< HEAD
     s = Node(start, None)
     heapq.heappush(frontier, s)
-=======
-    fn = gn + hn
-    s = Node(locationS[0], locationS[1], fn, None)
-    frontier.append(s)
->>>>>>> c7dfc9e2c723ba6cd75627b2707cdd054e02a3c3
     while frontier:
         parent = heapq.heappop(frontier)
         if (parent.state == goal):          #TEST: after first iteration, parent is a list and not a node
@@ -154,25 +105,16 @@ def main():
             if mazeLines[i][j] == "G": 
                 locationG = i, j                  #goal location stored as tuple
                 print("G at: " + str(locationG))
-<<<<<<< HEAD
             
         
     searching = aStar(locationS, locationG)
     
-=======
-    
-    #TEST CODE
-    print(mazeLines[0][0])                      #prints "S" for maze1
-    print(mazeLines[6][6])                      #prints "G" for maze1
->>>>>>> c7dfc9e2c723ba6cd75627b2707cdd054e02a3c3
 
     #TEST EVALUATE
     #newNode = Node(0,0,None,None)
     #cost = newNode.moved_from_goal()
 
     maze.close
-
-    
 
 '''
 what to store in node
