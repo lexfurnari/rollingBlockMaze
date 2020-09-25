@@ -16,7 +16,7 @@ print(heapq.heappop(frontier))
 
 class Node:
     def __init__(self, state, parent):
-        self.state = state
+        self.state = ((x,y),(u,v)) 
         self.parent = parent
         self.g = 0                                   # true cost
         self.h = 0                                   # estimated cost 
@@ -27,11 +27,11 @@ class Node:
     def __eq__(self, other_node):
         return isinstance(other_node, Node) and self.state == other_node.state
 
-    def __less_than__(self, other_node):
-        return self.fcost < other_node.fcost         # fcost tells you which one to take off the queue 
+    def __lt__(self, other_node):
+        return self.f < other_node.fcost         # fcost tells you which one to take off the queue 
 
     def __more_than__(self, other_node):
-        return self.fcost > other_node.fcost
+        return self.f > other_node.fcost
 
 
 
@@ -46,6 +46,30 @@ class Node:
         # of the goal) + (the absolute value of the y location of the block - the y location of the goal)
         return (abs(self.location[0] - locationG[0]) + abs(self.location[1] - locationG[1]))
 
+    def standing(current):
+        standing = False
+        if current.state[0]  == current.state[1]:
+            standing = True
+        print(current.state)
+        return standing
+    print(standing)
+
+
+
+
+
+    #def legal_actions(current): #take in current state of the block
+         #if standing(current) == True:
+             # up 
+             #if current.state[]
+             #down
+             #left 
+             #right
+
+
+
+
+
 '''
 frontier = []
 heapq.heappush(frontier,'A')
@@ -57,19 +81,19 @@ print(heapq.heappop(frontier))
 def aStar(start, goal):
     frontier = []
     explored = list()
-    s = Node(start, None)
+    s = Node(start, None)                 #can loop through frontier or use.sort if can't figure out the heap 
     heapq.heappush(frontier, s)
     while frontier:
         parent = heapq.heappop(frontier)
         if (parent.state == goal):          #TEST: after first iteration, parent is a list and not a node
             return parent.state             #TEST: is state the solution? or is it just the node
         explored.append(parent.state)
-        for i in range(3):                   #TEST: what is the range?
-            for j in range(3):
+        for actions in actions(parent.state):
+
                 nextLocation = ([i],[j])
-                child = Node(nextLocation, parent)
+                child = Node(actions, parent, parent.g + 1, 0) # h is zero for now, make heuristic later
                 if child.state not in explored and child not in frontier:
-                    frontier.insert(0, frontier)        #how are we inserting into frontier?
+                    frontier.insert(0, frontier)       # use heappush instead of insert push maintaince heap invariant. 
                 elif child.state in frontier and child.state > frontier[0]:
                     frontier.insert(0,child)                #is this correct?
 
@@ -106,8 +130,10 @@ def main():
                 locationG = i, j                  #goal location stored as tuple
                 print("G at: " + str(locationG))
             
-        
+    n = Node(((0,0)(0,0)), None)
+    standing(n)       
     searching = aStar(locationS, locationG)
+
     
 
     #TEST EVALUATE
