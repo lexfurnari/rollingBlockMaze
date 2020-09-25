@@ -1,0 +1,21 @@
+// Project 1 - discussionlog.txt //  - Alexa Furnari, Tim Wu, Bridget Murphy
+
+Discussion Log
+
+9/17/20	1 hour		First meet up, discussed general ideas, began implementing aStar search.
+
+9/19/2		30 min		Check up meeting with Prof. Fitzsimmons.
+
+9/23/20	2 hours	Continued working on aStar search.
+
+9/24/20	3 hours	Asked Prof. Fitzsimmons for help regarding the actions for aStar. Finished the implementation for actions.
+
+9/25/20	3 hours	Completed implementation of the heuristic function.
+
+Sources
+
+https://docs.python.org/2/library/heapq.html 
+Used to learn about heap functions and how to implement them. Used .heapify(), .heappop() and .heappush() in A* search. 
+
+https://www.w3schools.com/python/python_tuples.asp
+Used to learn more about tuples in python in order to form and access the location of the block.
