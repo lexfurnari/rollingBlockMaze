@@ -45,6 +45,27 @@ def legal_actions(current, mazeLines, xMax, yMax): #take in current state of the
     if current.block1 == current.block2:                                                                            #if block is standing
 
         if block1[0] > 2:    
+            if ((mazeLines[block1[0]-1][block1[1]]) is not "*"):     #checks up
+                moves.append((block1[0]-1, block1[1]))
+                moves.append((block1[0]-2, block1[1]))
+
+        if block1[1] < yMax-2:
+            if ((mazeLines[block1[0]][block1[1]+1]) is not "*"):   #checks right
+                moves.append((block1[0], block1[1]+1))
+                moves.append((block1[0], block1[1]+2))
+
+        if block1[0] < xMax-2:
+            if ((mazeLines[block1[0]+1][block1[1]]) is not "*"):     #checks down
+                moves.append((block1[0]+1, block1[1]))
+                moves.append((block1[0]+2, block1[1]))
+
+        if block1[1] > 2:
+            if ((mazeLines[block1[0]][block1[1]-1]) is not "*"):     #checks left
+                moves.append((block1[0], block1[1]-1))
+                moves.append((block1[0], block1[1]-2))
+
+        '''
+        if block1[0] > 2:    
             if (((mazeLines[block1[0]-1][block1[1]]) is ".") and ((mazeLines[block1[0]-2][block1[1]]) is ".")):     #checks up
                 moves.append((block1[0]-1, block1[1]))
                 moves.append((block1[0]-2, block1[1]))
@@ -63,21 +84,43 @@ def legal_actions(current, mazeLines, xMax, yMax): #take in current state of the
             if (((mazeLines[block1[0]][block1[1]-1]) is ".") and ((mazeLines[block1[0]][block1[1]-2]) is ".")):     #checks left
                 moves.append((block1[0], block1[1]-1))
                 moves.append((block1[0], block1[1]-2))
+                '''
 
-    elif current.block1[0] == current.block2[0]:                                                                    #if laying horizontally (x's are the same)
+    elif current.block1[0] == current.block2[0]:                    #if laying horizontally (x's are the same)
 
+        if block2[0] > 0:
+            if ((mazeLines[block1[0]-1][block1[1]]) is not "*"):# and (mazeLines[block2[0]-1][block2[1]]) is not "*"):     #checks up
+                moves.append((block1[0]-1, block1[1]))
+                moves.append((block2[0]-1, block2[1]))
+
+        if block2[1] < yMax-1:
+            if ((mazeLines[block2[0]][block2[1]+1]) is not "*"):      #checks right
+                moves.append((block2[0], block2[1]+1))
+                moves.append((block2[0], block2[1]+1))
+
+        if block2[0] < xMax-1:
+            if ((mazeLines[block1[0]+1][block1[1]]) is not "*"):# and (mazeLines[block2[0]+1][block2[1]]) is not "*"):     #checks down
+                moves.append((block1[0]+1, block1[1]))
+                moves.append((block2[0]+1, block2[1]))
+
+        if block1[1] > 0:
+            if ((mazeLines[block1[0]][block1[1]-1]) is not "*"):      #checks left
+                moves.append((block1[0], block1[1]-1))
+                moves.append((block1[0], block1[1]-1))
+
+        '''
         if block2[1] > 0:
             if (((mazeLines[block1[0]-1][block1[1]]) is ".") and ((mazeLines[block2[0]-1][block2[1]]) is ".")):     #checks up
                 moves.append((block1[0]-1, block1[1]))
                 moves.append((block2[0]-1, block2[1]))
 
-        if block2[0] < xMax-1:
+        if block2[0] < yMax-1:
             if (((mazeLines[block2[0]][block2[1]+1]) is "G") or ((mazeLines[block2[0]][block2[1]+1]) is ".")):      #checks right
                 moves.append((block2[0], block2[1]+1))
                 moves.append((block2[0], block2[1]+1))
 
-        if block2[1] < yMax-1:
-            if (((mazeLines[block1[0]+1][block1[1]]) is ".") and ((mazeLines[block2[0]][block2[1]+1]) is ".")):     #checks down
+        if block2[0] < xMax-1:
+            if (((mazeLines[block1[0]+1][block1[1]]) is ".") and ((mazeLines[block2[0]+1][block2[1]]) is ".")):     #checks down
                 moves.append((block1[0]+1, block1[1]))
                 moves.append((block2[0]+1, block2[1]))
 
@@ -85,10 +128,32 @@ def legal_actions(current, mazeLines, xMax, yMax): #take in current state of the
             if (((mazeLines[block1[0]][block1[1]-1]) is "G") or ((mazeLines[block1[0]][block1[1]-1]) is ".")):      #checks left
                 moves.append((block1[0], block1[1]-1))
                 moves.append((block1[0], block1[1]-1))
+                '''
     
             
-    elif current.block1[1] == current.block2[1]:                                                                    #if laying vertically (y's are the same)
+    elif current.block1[1] == current.block2[1]:                        #if laying vertically (y's are the same)
 
+        if block1[0] > 0:
+            if ((mazeLines[block1[0]-1][block1[1]]) is not "*"):        #checks up
+                moves.append((block1[0]-1, block1[1]))
+                moves.append((block1[0]-1, block1[1]))
+
+        if block2[1] < yMax-1:
+            if ((mazeLines[block1[0]][block1[1]+1]) is not "*"): #and (mazeLines[block2[0]][block2[1]+1]) is not "*"):       #checks right
+                moves.append((block1[0], block1[1]+1))
+                moves.append((block2[0], block2[1]+1))
+
+        if block2[0] < xMax-1:
+            if ((mazeLines[block2[0]+1][block2[1]]) is not "*"):        #checks down
+                moves.append((block2[0]+1, block2[1]))
+                moves.append((block2[0]+1, block2[1]))
+        
+        if block1[1] > 0:
+            if ((mazeLines[block1[0]][block1[1]-1]) is not "*"):# and (mazeLines[block2[0]][block2[1]-1]) is not "*"):        #checks left
+                moves.append((block1[0], block1[1]-1))
+                moves.append((block2[0], block2[1]-1))
+
+        '''
         if block1[0] > 0:
             if (((mazeLines[block1[0]-1][block1[1]]) is "G") or ((mazeLines[block1[0]-1][block1[1]]) is ".")):      #checks up
                 moves.append((block1[0]-1, block1[1]))
@@ -108,6 +173,7 @@ def legal_actions(current, mazeLines, xMax, yMax): #take in current state of the
             if (((mazeLines[block1[0]][block1[1]-1]) is ".") and ((mazeLines[block2[0]][block2[1]-1]) is ".")):     #checks left
                 moves.append((block1[0], block1[1]-1))
                 moves.append((block2[0], block2[1]-1))
+                '''
 
     return moves
 
@@ -131,18 +197,20 @@ def aStar(start, goal, mazeLines, xMax, yMax):
         #print(parent.state)
         moveList = legal_actions(parent, mazeLines, xMax, yMax)
         for i in (range(len(moveList))):
-            #if i%2 == 1:
-            #    continue
+            if i%2 == 1:
+                continue
             print(moveList)
-            child = Node(moveList[0], moveList[1], parent, g+1, 0) # h is zero for now, make heuristic later
+            child = Node(moveList[i], moveList[i+1], parent, g+1, 0) # h is zero for now, make heuristic later
             #print(child.state)
             if child not in frontier and child.state not in explored:
                 #frontier.append(child)
                 heapq.heappush(frontier,child)            # use heappush instead of insert push maintaince heap in variant. 
-            #elif child in frontier:
+            elif child in frontier:
             #elif child.state in frontier and child.state > frontier[0]:
-            else:
+            #else:
+                #heapq.heappush(frontier,child) 
                 heapq.heapreplace(frontier,child)
+                heapq.heapify(frontier)
                 #frontier.insert(0,child)               #is this correct?
                 #frontier.append(child)
 
