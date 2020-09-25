@@ -2,14 +2,18 @@ import sys
 import heapq
 
 class Node:
-    def __init__(self, block1, block2, parent, g, h):
+    def __init__(self, block1, block2, parent, g, h, goal):
         self.state = (block1,block2)
         self.block1 = block1
         self.block2 = block2
         self.parent = parent
-        self.g = 0                                   # true cost
-        self.h = 0                                   # estimated cost 
-        self.f = self.g + self.h                     # f = g + h    
+        self.h = 0
+        self.g = g                                              # true cost
+        if h == 1:
+            self.h = manhattan_distance(self.block1, goal)      # estimated cost 
+            self.f = self.g + self.h                            # f = g + h
+        else:
+            self.f = self.g
 
 
     # Nodes with the same state are viewed as equal
@@ -29,266 +33,193 @@ class Node:
     def __hash__(self):
         return hash(self.state)
 
-    # Evaluates the number of blocks away from the goal
-    def __moves_from_goal__ (self):
-        # true_cost = (the absolute value of the x location of block - the x location 
-        # of the goal) + (the absolute value of the y location of the block - the y location of the goal)
-        return (abs(self.state[0] - goal[0]) + abs(self.state[1] - goal[1]))
+# Evaluates the number of blocks away from the goal
+def manhattan_distance(current, goal):
+    # true_cost = (the absolute value of the x location of block - the x location
+    # of the goal) + (the absolute value of the y location of the block - the y location of the goal)
+    return ((abs(current[0] - goal[0]) + (abs(current[1] - goal[1]))/(2)))
 
 
-def legal_actions(current, mazeLines, xMax, yMax): #take in current state of the block
+def legal_actions(current, mazeLines, xMax, yMax): #take in current state of the block, array of the maze, and the edges of the maze
     moves = []
-    
+
     block1 = current.block1
     block2 = current.block2
 
-    if current.block1 == current.block2:                                                                            #if block is standing
 
-        if block1[0] > 2:    
-            if ((mazeLines[block1[0]-1][block1[1]]) is not "*"):     #checks up
+    if current.block1 == current.block2:                                                                                #if block is standing
+        if block1[0] > 1:    
+            if ((mazeLines[block1[0]-1][block1[1]]) is not "*" and (mazeLines[block1[0]-2][block1[1]]) is not "*"):     #checks up
                 moves.append((block1[0]-1, block1[1]))
                 moves.append((block1[0]-2, block1[1]))
 
         if block1[1] < yMax-2:
-            if ((mazeLines[block1[0]][block1[1]+1]) is not "*"):   #checks right
+            if ((mazeLines[block1[0]][block1[1]+1]) is not "*" and (mazeLines[block1[0]][block1[1]+2]) is not "*"):     #checks right
                 moves.append((block1[0], block1[1]+1))
                 moves.append((block1[0], block1[1]+2))
 
         if block1[0] < xMax-2:
-            if ((mazeLines[block1[0]+1][block1[1]]) is not "*"):     #checks down
+            if ((mazeLines[block1[0]+1][block1[1]]) is not "*" and (mazeLines[block1[0]+2][block1[1]]) is not "*"):     #checks down
                 moves.append((block1[0]+1, block1[1]))
                 moves.append((block1[0]+2, block1[1]))
 
-        if block1[1] > 2:
-            if ((mazeLines[block1[0]][block1[1]-1]) is not "*"):     #checks left
+        if block1[1] > 1:
+            if ((mazeLines[block1[0]][block1[1]-1]) is not "*" and (mazeLines[block1[0]][block1[1]-2]) is not "*"):     #checks left
                 moves.append((block1[0], block1[1]-1))
                 moves.append((block1[0], block1[1]-2))
 
-        '''
-        if block1[0] > 2:    
-            if (((mazeLines[block1[0]-1][block1[1]]) is ".") and ((mazeLines[block1[0]-2][block1[1]]) is ".")):     #checks up
-                moves.append((block1[0]-1, block1[1]))
-                moves.append((block1[0]-2, block1[1]))
 
-        if block1[1] < yMax-2:
-            if (((mazeLines[block1[0]][block1[1]+1]) is ".") and ((mazeLines[block1[0]][block1[1]+2]) is ".")):   #checks right
-                moves.append((block1[0], block1[1]+1))
-                moves.append((block1[0], block1[1]+2))
+    elif current.block1[0] == current.block2[0]:                                                                        #if laying horizontally (x's are the same)
 
-        if block1[0] < xMax-2:
-            if (((mazeLines[block1[0]+1][block1[1]]) is ".") and ((mazeLines[block1[0]+2][block1[1]]) is '.')):     #checks down
-                moves.append((block1[0]+1, block1[1]))
-                moves.append((block1[0]+2, block1[1]))
-
-        if block1[1] > 2:
-            if (((mazeLines[block1[0]][block1[1]-1]) is ".") and ((mazeLines[block1[0]][block1[1]-2]) is ".")):     #checks left
-                moves.append((block1[0], block1[1]-1))
-                moves.append((block1[0], block1[1]-2))
-                '''
-
-    elif current.block1[0] == current.block2[0]:                    #if laying horizontally (x's are the same)
-
-        if block2[0] > 0:
-            if ((mazeLines[block1[0]-1][block1[1]]) is not "*"):# and (mazeLines[block2[0]-1][block2[1]]) is not "*"):     #checks up
+        if block1[0] > 0 and block2[0] > 0:                                                                             #checks up
+            if ((mazeLines[block1[0]-1][block1[1]]) is not "*" and (mazeLines[block2[0]-1][block2[1]]) is not "*"): 
                 moves.append((block1[0]-1, block1[1]))
                 moves.append((block2[0]-1, block2[1]))
 
-        if block2[1] < yMax-1:
-            if ((mazeLines[block2[0]][block2[1]+1]) is not "*"):      #checks right
-                moves.append((block2[0], block2[1]+1))
-                moves.append((block2[0], block2[1]+1))
+        if block1[1] < yMax-1 and block2[1] < yMax-1:                                                                   #checks right
+            if block1[1] > block2[1]:                                                                                   #checks for furthest right block
+                if ((mazeLines[block1[0]][block1[1]+1]) is not "*"):
+                    moves.append((block1[0], block1[1]+1))
+                    moves.append((block1[0], block1[1]+1))
+            elif block2[1] > block1[1]:
+                if ((mazeLines[block2[0]][block2[1]+1]) is not "*"):                                                       
+                    moves.append((block2[0], block2[1]+1))
+                    moves.append((block2[0], block2[1]+1))
 
-        if block2[0] < xMax-1:
-            if ((mazeLines[block1[0]+1][block1[1]]) is not "*"):# and (mazeLines[block2[0]+1][block2[1]]) is not "*"):     #checks down
+
+        if block1[0] < xMax-1 and block2[0] < xMax-1:
+            if ((mazeLines[block1[0]+1][block1[1]]) is not "*" and (mazeLines[block2[0]+1][block2[1]]) is not "*"):     #checks down
                 moves.append((block1[0]+1, block1[1]))
                 moves.append((block2[0]+1, block2[1]))
 
-        if block1[1] > 0:
-            if ((mazeLines[block1[0]][block1[1]-1]) is not "*"):      #checks left
-                moves.append((block1[0], block1[1]-1))
-                moves.append((block1[0], block1[1]-1))
-
-        '''
-        if block2[1] > 0:
-            if (((mazeLines[block1[0]-1][block1[1]]) is ".") and ((mazeLines[block2[0]-1][block2[1]]) is ".")):     #checks up
-                moves.append((block1[0]-1, block1[1]))
-                moves.append((block2[0]-1, block2[1]))
-
-        if block2[0] < yMax-1:
-            if (((mazeLines[block2[0]][block2[1]+1]) is "G") or ((mazeLines[block2[0]][block2[1]+1]) is ".")):      #checks right
-                moves.append((block2[0], block2[1]+1))
-                moves.append((block2[0], block2[1]+1))
-
-        if block2[0] < xMax-1:
-            if (((mazeLines[block1[0]+1][block1[1]]) is ".") and ((mazeLines[block2[0]+1][block2[1]]) is ".")):     #checks down
-                moves.append((block1[0]+1, block1[1]))
-                moves.append((block2[0]+1, block2[1]))
-
-        if block1[0] > 0:
-            if (((mazeLines[block1[0]][block1[1]-1]) is "G") or ((mazeLines[block1[0]][block1[1]-1]) is ".")):      #checks left
-                moves.append((block1[0], block1[1]-1))
-                moves.append((block1[0], block1[1]-1))
-                '''
-    
+        if block1[1] > 0 and block2[1] > 0:                                                                             #checks left
+            if block1[1] < block2[1]:                                                                                   #checks for furthest left piece
+                if ((mazeLines[block1[0]][block1[1]-1]) is not "*"):                    
+                    moves.append((block1[0], block1[1]-1))
+                    moves.append((block1[0], block1[1]-1))
+            elif block2[1] < block1[1]:
+                if ((mazeLines[block2[0]][block2[1]-1]) is not "*"): 
+                    moves.append((block2[0], block2[1]-1))
+                    moves.append((block2[0], block2[1]-1))
+ 
             
-    elif current.block1[1] == current.block2[1]:                        #if laying vertically (y's are the same)
+    elif current.block1[1] == current.block2[1]:                                                                        #if laying vertically (y's are the same)
 
-        if block1[0] > 0:
-            if ((mazeLines[block1[0]-1][block1[1]]) is not "*"):        #checks up
-                moves.append((block1[0]-1, block1[1]))
-                moves.append((block1[0]-1, block1[1]))
+        if block1[0] > 0 and block2[0] > 0:                                                                             #checks up
+            if(block2[0] > block1[0]):                                                                                  #checks for highest block piece
+                if ((mazeLines[block1[0]-1][block1[1]]) is not "*"):    
+                    moves.append((block1[0]-1, block1[1]))
+                    moves.append((block1[0]-1, block1[1]))
+            elif(block1[0] > block2[0]):
+                if ((mazeLines[block2[0]-1][block2[1]]) is not "*"):
+                    moves.append((block2[0]-1, block2[1]))
+                    moves.append((block2[0]-1, block2[1]))
 
-        if block2[1] < yMax-1:
-            if ((mazeLines[block1[0]][block1[1]+1]) is not "*"): #and (mazeLines[block2[0]][block2[1]+1]) is not "*"):       #checks right
+        if block1[1] < yMax-1 and block2[1] < yMax-1:                                                                   #checks right
+            if ((mazeLines[block1[0]][block1[1]+1]) is not "*" and (mazeLines[block2[0]][block2[1]+1]) is not "*"):    
                 moves.append((block1[0], block1[1]+1))
                 moves.append((block2[0], block2[1]+1))
 
-        if block2[0] < xMax-1:
-            if ((mazeLines[block2[0]+1][block2[1]]) is not "*"):        #checks down
-                moves.append((block2[0]+1, block2[1]))
-                moves.append((block2[0]+1, block2[1]))
+        if block1[0] < xMax-1 and block2[0] < xMax-1:                                                                    #checks down
+            if(block2[0] < block1[0]):                                                                                   #checks for lowest block piece
+                if ((mazeLines[block2[0]+1][block2[1]]) is not "*"):   
+                    moves.append((block2[0]+1, block2[1]))
+                    moves.append((block2[0]+1, block2[1]))
+            elif(block1[0] < block2[0]):
+                if ((mazeLines[block1[0]+1][block1[1]]) is not "*"):
+                    moves.append((block1[0]+1, block1[1]))
+                    moves.append((block1[0]+1, block1[1]))
         
-        if block1[1] > 0:
-            if ((mazeLines[block1[0]][block1[1]-1]) is not "*"):# and (mazeLines[block2[0]][block2[1]-1]) is not "*"):        #checks left
+        if block1[1] > 0 and block2[1] > 0:                                                                             #checks left
+            if ((mazeLines[block1[0]][block1[1]-1]) is not "*" and (mazeLines[block2[0]][block2[1]-1]) is not "*"): 
                 moves.append((block1[0], block1[1]-1))
                 moves.append((block2[0], block2[1]-1))
-
-        '''
-        if block1[0] > 0:
-            if (((mazeLines[block1[0]-1][block1[1]]) is "G") or ((mazeLines[block1[0]-1][block1[1]]) is ".")):      #checks up
-                moves.append((block1[0]-1, block1[1]))
-                moves.append((block1[0]-1, block1[1]))
-
-        if block2[1] < yMax-1:
-            if (((mazeLines[block1[0]][block1[1]+1]) is ".") and ((mazeLines[block2[0]][block2[1]+1]) is ".")):     #checks right
-                moves.append((block1[0], block1[1]+1))
-                moves.append((block2[0], block2[1]+1))
-
-        if block2[0] < xMax-1:
-            if (((mazeLines[block2[0]+1][block2[1]]) is "G") or ((mazeLines[block2[0]+1][block2[1]]) is ".")):      #checks down
-                moves.append((block2[0]+1, block2[1]))
-                moves.append((block2[0]+1, block2[1]))
-        
-        if block1[1] > 0:
-            if (((mazeLines[block1[0]][block1[1]-1]) is ".") and ((mazeLines[block2[0]][block2[1]-1]) is ".")):     #checks left
-                moves.append((block1[0], block1[1]-1))
-                moves.append((block2[0], block2[1]-1))
-                '''
 
     return moves
 
 
-
-
 #A* search
-def aStar(start, goal, mazeLines, xMax, yMax):
+def aStar(start, goal, mazeLines, xMax, yMax, heur):
     frontier = list()
     explored = list()
-    g = 0
-    s = Node(start, start, None, g, 0)
+    pathList = list()
+    pathCount = 0
+    nodeCount = 0
+    nodeVisit = 0
+    h = int(heur)
+    s = Node(start, start, None, 0, h, goal)
     frontier.append(s)
-    while frontier is not None:
+    while frontier:
         heapq.heapify(frontier)
         parent = heapq.heappop(frontier) 
+        nodeVisit = nodeVisit+1
         explored.append(parent.state)
+
         if (parent.state == (goal,goal)):
-            print("GOAL")
-            return parent.state                         #TEST: We want a path once the solution is found
-        #print(parent.state)
+            print("Path Found!")
+            while parent is not None:                           #while Node is not empty
+                pathList.append(parent.state)                   #append to path list from bottom up
+                parent = parent.parent                          #move current Node to parent Node
+                pathCount = pathCount + 1
+            pathList.reverse()                                  #reorder pathList to correct order
+            print(pathList)
+            print("Path length: " + str(pathCount))
+            print("Nodes generated: " + str(nodeCount))
+            print("Nodes visted: " + str(nodeVisit))
+            return pathList
+
         moveList = legal_actions(parent, mazeLines, xMax, yMax)
         for i in (range(len(moveList))):
-            if i%2 == 1:
+            if i%2 == 1:                                        #we want every other i because we send moveList[i] and moveList[i+1]
                 continue
-            print(moveList)
-            child = Node(moveList[i], moveList[i+1], parent, g+1, 0) # h is zero for now, make heuristic later
-            #print(child.state)
+            child = Node(moveList[i], moveList[i+1], parent, parent.g+1, h, goal)
+
             if child not in frontier and child.state not in explored:
-                #frontier.append(child)
-                heapq.heappush(frontier,child)            # use heappush instead of insert push maintaince heap in variant. 
+                heapq.heappush(frontier,child)
+                nodeCount = nodeCount+1
+
             elif child in frontier:
-            #elif child.state in frontier and child.state > frontier[0]:
-            #else:
-                #heapq.heappush(frontier,child) 
-                heapq.heapreplace(frontier,child)
-                heapq.heapify(frontier)
-                #frontier.insert(0,child)               #is this correct?
-                #frontier.append(child)
+                tempNode = frontier.pop()
+                if(child.f < tempNode.f):
+                    heapq.heapify(frontier)
+                    heapq.heappush(frontier,child)
+                else:
+                    frontier.append(tempNode)
 
     return None
-
 
     
 #retrieves maze file from command line argument
 mazeNum = sys.argv[1]
+heur = sys.argv[2]
 
 def main():
-    fileCounter = 0
-    start = None
-    goal = None
     xMax = 0
     yMax = 0
-    print(mazeNum)
+    start = None
+    goal = None
+    print("Reading from file: " + str(mazeNum))
     maze = open(mazeNum + ".txt", "r")
     print(maze.read())                          #prints full map of maze
     maze = open(mazeNum + ".txt", "r")
     mazeLines = maze.readlines()                #creates 2D array of maze
-    #print(mazeLines)
-    maze = open(mazeNum + ".txt", "r")
     for i in range(len(mazeLines)):             #iterates through maze to find location of S and G
-        xMax = xMax+1
+        xMax = xMax + 1
         for j in range(len(mazeLines)):
             yMax = yMax + 1
-            fileCounter = fileCounter + 1
             if mazeLines[i][j] == "S":  
-                start = i, j                  #start location storec as tuple
-                print("S at: " + str(start))
-            if mazeLines[i][j] == "G": 
-                goal = i, j                  #goal location stored as tuple
-                print("G at: " + str(goal))
+                start = (i, j)                   #start location storec as tuple
+            elif mazeLines[i][j] == "G": 
+                goal = (i, j)                    #goal location stored as tuple
 
+    print("S at: " + str(start))
+    print("G at: " + str(goal))
     yMax = yMax//xMax
-
-    aStar(start, goal, mazeLines, xMax, yMax)
-
-    '''
-    #block1 = n.loc1
-    if (mazeLines[1][0] == ".") and (mazeLines[2][0] == '.'):
-        mazeLines[1][0].insert(1,"1")
-        mazeLines[2][0].insert(2,"1")
-    #maze = open(mazeNum + ".txt", "w")
-    print(mazeLines)  
-    #standing(n)       
-    '''
-
+    search = aStar(start, goal, mazeLines, xMax, yMax, heur)
+    if (search == None):
+        print("Sorry, path could not be found")
+    
     maze.close
-
-'''
-what to store in node
-   present
-   cost to goal
-   h-cost
-   f-cost
-If wanna use list class, must use >, < for node class
-to find fn of child, take gn of parent plus hn of child
-for an admissible heuristic, hn =< h*n
-   where h*n = true cost to goal
-Use sm similar to manhattan distance
-keep in mind oreintation of block
-use of tuples?
-Use two sets of coordinates to determine if standing or laying down
-Go through all the actions and make a child
-    g cost is number of moves, so g = g+1
-    Or to optimize, lie down as least often as possible
-#1 Goal: make action for function
-    put it instead of for i in range; for j in range
-    need function that returns all possible moves
-    need function: if standing, change coordinates; else ...
-#2 Goal: once action is working, then A*
-#3 Goal: then work with heuristics
-    first use 0 for heuristic to check if it works, then try more
-
-Test: build a new smaller maze to test
-'''
 
 if __name__ == "__main__": 
     main()
